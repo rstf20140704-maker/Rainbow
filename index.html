@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>東大門彩虹臭薯條｜點餐系統 A43</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Noto+Sans+TC:wght@400;500;600;700;900&family=JetBrains+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --cream:#F5EEDC;
+    --cream-deep:#EBDFC0;
+    --ink:#3A2A18;
+    --ink-soft:#6B5744;
+
+    /* sampled from the actual A43 signboard photo */
+    --maroon:#8A2E0E;
+    --maroon-deep:#4A1508;
+    --gold:#F5B72E;
+    --gold-deep:#C6860A;
+    --cup-red:#C81D1D;
+    --cup-red-deep:#8C1414;
+    --cup-dot:#7A1414;
+    --teal:#14A69C;
+    --pink:#D81B7A;
+    --orange-stamp:#E07B29;
+
+    --paper:#FFFDF8;
+    --line:#E4D6B8;
+    --good:#2F8F4E;
+
+    --c-garlic:#8B6B3D;
+    --c-spicy:#DD7A1E;
+    --c-cheese:#F0C93B;
+    --c-plum:#9CBB78;
+    --c-salt:#2F8F4E;
+    --c-thai:#7A4B2A;
+    --c-honey:#D9A441;
+
+    --font-display:'Baloo 2', 'Noto Sans TC', sans-serif;
+    --font-body:'Noto Sans TC', sans-serif;
+    --font-mono:'JetBrains Mono', monospace;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 6px 6px, rgba(58,42,24,0.05) 1.5px, transparent 1.6px) 0 0/24px 24px,
+      var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+    min-height:100vh;
+    padding-bottom:96px;
+  }
+
+  a{color:inherit;}
+
+  /* ---------- Header (mirrors the real A43 signboard) ---------- */
+  header.top{
+    position:sticky; top:0; z-index:40;
+    background:
+      radial-gradient(ellipse 480px 220px at 8% -30%, rgba(245,183,46,0.22), transparent 65%),
+      linear-gradient(115deg, var(--maroon) 0%, var(--maroon-deep) 62%, #2E0D04 100%);
+    color:#FFF3E0;
+    padding:12px 16px;
+    box-shadow:0 6px 18px rgba(20,8,4,0.35);
+    border-bottom:3px solid var(--gold-deep);
+  }
+  .top-row{display:flex; align-items:center; justify-content:space-between; gap:12px; max-width:1180px; margin:0 auto;}
+  .brand{display:flex; align-items:center; gap:12px; flex-wrap:wrap;}
+  .logo-badge{
+    width:52px; height:52px; border-radius:14px; overflow:hidden; flex:0 0 auto;
+    border:2px solid rgba(245,183,46,0.55);
+    box-shadow:0 3px 8px rgba(0,0,0,0.35);
+  }
+  .logo-badge img{width:100%; height:100%; object-fit:cover; display:block;}
+  .brand-text{display:flex; flex-direction:column; gap:2px;}
+  .brand-title-row{display:flex; align-items:center; gap:8px; flex-wrap:wrap;}
+  .brand h1{
+    font-family:var(--font-display); font-weight:800; font-size:21px; letter-spacing:.5px; margin:0;
+    color:var(--gold);
+    text-shadow:0 2px 0 var(--maroon-deep), 0 0 1px rgba(0,0,0,0.4);
+  }
+  .brand .stall-no{
+    font-family:var(--font-mono); font-weight:700; font-size:11.5px;
+    background:var(--orange-stamp); color:#3A1600;
+    padding:3px 9px; border-radius:20px; letter-spacing:.5px;
+    box-shadow:0 2px 0 rgba(0,0,0,0.2);
+  }
+  .brand .tagline{font-size:11px; opacity:.85; font-weight:500; letter-spacing:.3px;}
+  .brand .tagline .en{font-family:var(--font-mono); opacity:.8;}
+  .clock{font-family:var(--font-mono); font-size:12px; opacity:.85; text-align:right; line-height:1.5; color:#FFE9C2;}
+
+  /* ---------- Layout ---------- */
+  .layout{
+    max-width:1180px; margin:0 auto; padding:18px 16px 0;
+    display:grid; grid-template-columns:1fr; gap:18px;
+  }
+  @media (min-width:960px){
+    .layout{grid-template-columns:1fr 340px; align-items:start;}
+  }
+
+  /* ---------- Filter chips ---------- */
+  .filters{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
+  .filters::-webkit-scrollbar{display:none;}
+  .chip{
+    flex:0 0 auto; font-family:var(--font-display); font-weight:600; font-size:13.5px;
+    padding:8px 16px; border-radius:999px; border:1.5px solid var(--line);
+    background:var(--paper); color:var(--ink-soft); cursor:pointer;
+    transition:all .15s ease;
+    white-space:nowrap;
+  }
+  .chip.active{
+    background:var(--maroon); border-color:var(--maroon); color:var(--gold);
+  }
+
+  /* ---------- Product grid ---------- */
+  .grid{
+    display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;
+  }
+  @media (min-width:600px){ .grid{grid-template-columns:repeat(3, 1fr);} }
+  @media (min-width:960px){ .grid{grid-template-columns:repeat(2, 1fr);} }
+  @media (min-width:1180px){ .grid{grid-template-columns:repeat(3, 1fr);} }
+
+  .card{
+    position:relative;
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:18px;
+    overflow:hidden;
+    display:flex; flex-direction:column;
+    transition:box-shadow .15s ease, transform .15s ease, border-color .15s ease;
+  }
+  .card.active-item{border-color:var(--flavor); box-shadow:0 6px 0 0 var(--flavor);}
+  .card:active{transform:translateY(1px);}
+
+  .card .badge-row{
+    position:absolute; top:8px; left:8px; right:8px; z-index:2;
+    display:flex; justify-content:space-between; align-items:flex-start;
+  }
+  .diet-badge{
+    font-family:var(--font-body); font-weight:700; font-size:10.5px;
+    padding:3px 9px; border-radius:999px; color:#fff;
+    background:var(--diet-color, rgba(58,42,24,0.72)); letter-spacing:.3px;
+    box-shadow:0 2px 4px rgba(0,0,0,0.25);
+  }
+  .qty-badge{
+    font-family:var(--font-mono); font-weight:700; font-size:12px;
+    min-width:22px; text-align:center; padding:3px 6px; border-radius:999px;
+    background:var(--flavor); color:#fff; box-shadow:0 1px 4px rgba(0,0,0,0.25);
+    opacity:0; transform:scale(.6); transition:all .15s ease;
+  }
+  .card.active-item .qty-badge{opacity:1; transform:scale(1);}
+
+  .card .photo-wrap{
+    aspect-ratio:1/0.95; background:var(--flavor);
+    display:flex; align-items:center; justify-content:center;
+    position:relative;
+  }
+  .card .photo-wrap img{
+    width:100%; height:100%; object-fit:cover; object-position:center 30%;
+    mix-blend-mode:normal;
+  }
+  .card .photo-wrap::after{
+    content:""; position:absolute; inset:0;
+    background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.28) 100%);
+  }
+
+  .card .info{padding:10px 12px 12px; display:flex; flex-direction:column; gap:7px; flex:1;}
+  .card .flavor-name{
+    font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.25;
+  }
+  .card .flavor-name .en{
+    display:block; font-family:var(--font-body); font-weight:500; font-size:10.5px; color:var(--ink-soft); margin-top:1px;
+  }
+  .card .sizes{display:flex; flex-direction:column; gap:6px; margin-top:auto;}
+  .size-row{display:flex; align-items:center; justify-content:space-between; gap:6px;}
+  .size-row .size-tag{
+    font-family:var(--font-body); font-weight:700; font-size:10.5px; color:var(--ink-soft);
+    min-width:30px; flex:0 0 auto;
+  }
+  .card .price{
+    font-family:var(--font-mono); font-weight:800; font-size:12.5px; color:#fff;
+    background:var(--cup-red); padding:3px 8px; border-radius:8px 3px 8px 3px;
+    box-shadow:0 2px 0 var(--cup-red-deep); transform:rotate(-2deg);
+    display:inline-block; flex:1 1 auto; text-align:center;
+  }
+  .size-row.large .price{background:var(--maroon); box-shadow:0 2px 0 var(--maroon-deep);}
+
+  .stepper{display:flex; align-items:center; gap:0; border:1.5px solid var(--line); border-radius:9px; overflow:hidden; flex:0 0 auto;}
+  .stepper button{
+    width:24px; height:24px; border:none; background:var(--cream-deep); color:var(--ink);
+    font-size:14px; font-weight:700; cursor:pointer; line-height:1;
+  }
+  .stepper button:active{background:var(--flavor); color:#fff;}
+  .stepper .n{
+    width:22px; text-align:center; font-family:var(--font-mono); font-weight:700; font-size:12px;
+  }
+
+  /* ---------- Cart / cup panel ---------- */
+  .cup-panel{
+    background:var(--paper);
+    border:1.5px solid var(--line);
+    border-radius:20px;
+    overflow:hidden;
+    position:sticky; top:96px;
+  }
+  .cup-band{
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle 4px, var(--cup-dot) 4px, transparent 4.2px);
+    background-size:26px 26px;
+    background-position:0 0;
+    border-bottom:2px solid var(--cup-red);
+    padding:14px 16px 12px;
+  }
+  .cup-band .cup-band-inner{
+    background:linear-gradient(115deg, var(--maroon) 0%, var(--maroon-deep) 100%);
+    color:var(--gold); border-radius:12px;
+    padding:8px 12px; display:flex; align-items:center; justify-content:space-between;
+    box-shadow:0 3px 8px rgba(20,8,4,0.3);
+  }
+  .cup-band .cup-band-inner .count{background:rgba(245,183,46,0.2); color:#FFF3E0;}
+  .cup-band h2{margin:0; font-family:var(--font-display); font-weight:700; font-size:15px;}
+  .cup-band .count{font-family:var(--font-mono); font-size:12px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:999px;}
+
+  .cart-body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px;}
+  .cart-empty{
+    text-align:center; color:var(--ink-soft); font-size:13px; padding:22px 8px;
+    border:1.5px dashed var(--line); border-radius:12px; line-height:1.7;
+  }
+  .cart-list{display:flex; flex-direction:column; gap:8px; max-height:280px; overflow-y:auto;}
+  .cart-row{
+    display:grid; grid-template-columns:8px 1fr auto; align-items:center; gap:8px;
+    padding:7px 0; border-bottom:1px dashed var(--line);
+  }
+  .cart-row:last-child{border-bottom:none;}
+  .swatch{width:8px; height:8px; border-radius:2px; align-self:center;}
+  .cart-row .name{font-size:12.5px; font-weight:600; line-height:1.35;}
+  .cart-row .sub{font-family:var(--font-mono); font-size:11px; color:var(--ink-soft); margin-top:1px;}
+  .cart-row .amt{font-family:var(--font-mono); font-weight:700; font-size:13px; text-align:right; white-space:nowrap;}
+
+  .totals{border-top:1.5px solid var(--line); padding-top:10px; display:flex; flex-direction:column; gap:4px;}
+  .totals .line{display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-soft);}
+  .totals .grand{display:flex; justify-content:space-between; align-items:baseline; margin-top:4px;}
+  .totals .grand .label{font-family:var(--font-display); font-weight:700; font-size:15px;}
+  .totals .grand .value{
+    font-family:var(--font-mono); font-weight:800; font-size:22px; color:#fff;
+    background:var(--cup-red); padding:3px 12px; border-radius:10px 4px 10px 4px;
+    box-shadow:0 2px 0 var(--cup-red-deep); transform:rotate(-1.5deg); display:inline-block;
+  }
+
+  .pay-section{display:flex; flex-direction:column; gap:8px;}
+  .pay-label{font-size:12px; font-weight:700; color:var(--ink-soft); letter-spacing:.5px;}
+  .pay-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:7px;}
+  .pay-btn{
+    font-family:var(--font-body); font-weight:600; font-size:12.5px;
+    padding:9px 4px; border-radius:10px; border:1.5px solid var(--line);
+    background:var(--cream-deep); color:var(--ink); cursor:pointer; text-align:center;
+    transition:all .12s ease;
+  }
+  .pay-btn.selected{background:var(--ink); border-color:var(--ink); color:#FFF7EC;}
+
+  .submit-btn{
+    margin-top:4px; width:100%; padding:14px; border:none; border-radius:14px;
+    font-family:var(--font-display); font-weight:700; font-size:16px; letter-spacing:.5px;
+    background:var(--good); color:#fff; cursor:pointer;
+    box-shadow:0 4px 0 0 #1F6B38;
+    transition:transform .08s ease, box-shadow .08s ease;
+  }
+  .submit-btn:active{transform:translateY(3px); box-shadow:0 1px 0 0 #1F6B38;}
+  .submit-btn:disabled{
+    background:#C9BFA9; box-shadow:0 4px 0 0 #ABA189; cursor:not-allowed; color:#7A6F5A;
+  }
+  .clear-btn{
+    background:none; border:none; font-size:11.5px; color:var(--ink-soft);
+    text-decoration:underline; cursor:pointer; align-self:center; padding:2px;
+  }
+
+  /* ---------- Mobile bottom bar ---------- */
+  .mobile-bar{
+    display:none;
+    position:fixed; left:0; right:0; bottom:0; z-index:50;
+    background:linear-gradient(115deg, var(--maroon) 0%, var(--maroon-deep) 100%); color:var(--gold);
+    padding:12px 16px; align-items:center; justify-content:space-between;
+    box-shadow:0 -6px 18px rgba(0,0,0,0.25);
+    border-top:3px solid var(--gold-deep);
+  }
+  .mobile-bar .info{display:flex; flex-direction:column;}
+  .mobile-bar .info .count{font-size:11px; opacity:.8; color:#FFF3E0;}
+  .mobile-bar .info .total{font-family:var(--font-mono); font-weight:800; font-size:19px; color:var(--gold);}
+  .mobile-bar button{
+    font-family:var(--font-display); font-weight:700; font-size:14px;
+    background:var(--cup-red); color:#fff; border:none; padding:11px 22px; border-radius:12px;
+    box-shadow:0 3px 0 0 var(--cup-red-deep);
+  }
+  @media (max-width:959px){
+    .mobile-bar{display:flex;}
+    .cup-panel{position:fixed; left:0; right:0; bottom:0; top:auto; max-height:88vh;
+      border-radius:22px 22px 0 0; transform:translateY(110%); transition:transform .25s ease;
+      z-index:60; display:flex; flex-direction:column;}
+    .cup-panel.open{transform:translateY(0);}
+    .cart-body{overflow-y:auto;}
+    .cart-list{max-height:none;}
+    body{padding-bottom:78px;}
+    .sheet-close{display:block !important;}
+    .scrim{content:"";}
+  }
+  .sheet-close{
+    display:none; position:absolute; top:10px; right:12px; z-index:2;
+    width:30px; height:30px; border-radius:50%; border:none; background:rgba(58,42,24,0.5);
+    color:#fff; font-size:16px; cursor:pointer;
+  }
+  .scrim{
+    display:none; position:fixed; inset:0; background:rgba(58,42,24,0.35); z-index:55;
+  }
+  .scrim.show{display:block;}
+
+  footer.foot{
+    max-width:1180px; margin:26px auto 0; padding:0 16px; text-align:center;
+    color:var(--ink-soft); font-size:11.5px; line-height:1.8;
+  }
+
+  /* ---------- Toast ---------- */
+  .toast-wrap{position:fixed; top:14px; left:50%; transform:translateX(-50%) translateY(-140%);
+    z-index:100; transition:transform .3s ease; width:min(92vw, 380px);}
+  .toast-wrap.show{transform:translateX(-50%) translateY(0);}
+  .toast{
+    background:linear-gradient(115deg, var(--maroon) 0%, var(--maroon-deep) 100%); color:#FFF3E0; border-radius:14px; padding:14px 16px;
+    box-shadow:0 10px 30px rgba(0,0,0,0.3);
+    display:flex; gap:10px; align-items:flex-start;
+    border:1px solid var(--gold-deep);
+  }
+
+  .toast .dot{width:10px; height:10px; border-radius:50%; background:var(--good); margin-top:4px; flex:0 0 auto;}
+  .toast.error .dot{background:var(--cup-red);}
+  .toast .msg .t1{font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--gold);}
+  .toast .msg .t2{font-family:var(--font-mono); font-size:11.5px; opacity:.8; margin-top:2px;}
+
+  .visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
+  :focus-visible{outline:3px solid var(--cup-red); outline-offset:2px;}
+
+  @media (prefers-reduced-motion: reduce){
+    *{transition:none !important; animation:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="top-row">
+    <div class="brand">
+      <div class="logo-badge"><img src="images/logo-mascot.jpg" alt="彩虹臭薯條 吉祥物標誌"></div>
+      <div class="brand-text">
+        <div class="brand-title-row">
+          <h1>彩虹臭薯條</h1>
+          <span class="stall-no">A43</span>
+        </div>
+        <span class="tagline">創新美味・口味獨特　<span class="en">FRENCH FRIES TOFU</span></span>
+      </div>
+    </div>
+    <div class="clock" id="clock">--:--:--</div>
+  </div>
+</header>
+
+<div class="layout">
+  <main>
+    <div class="filters" role="tablist" aria-label="商品分類">
+      <button class="chip active" data-filter="all" role="tab" aria-selected="true">全部</button>
+      <button class="chip" data-filter="全素" role="tab" aria-selected="false">全素</button>
+      <button class="chip" data-filter="蛋奶素" role="tab" aria-selected="false">蛋奶素</button>
+    </div>
+    <div class="grid" id="grid"></div>
+  </main>
+
+  <aside id="cupPanel" class="cup-panel" aria-label="目前訂單">
+    <button class="sheet-close" id="sheetClose" aria-label="關閉訂單">✕</button>
+    <div class="cup-band">
+      <div class="cup-band-inner">
+        <h2>目前訂單</h2>
+        <span class="count" id="itemCount">0 項</span>
+      </div>
+    </div>
+    <div class="cart-body">
+      <div id="cartArea"></div>
+
+      <div class="totals">
+        <div class="line"><span>商品小計</span><span id="subtotal" class="amt-mono">$0</span></div>
+        <div class="grand">
+          <span class="label">總金額</span>
+          <span class="value" id="grandTotal">$0</span>
+        </div>
+      </div>
+
+      <div class="pay-section">
+        <span class="pay-label">付款方式</span>
+        <div class="pay-grid" id="payGrid">
+          <button class="pay-btn" data-pay="現金">現金</button>
+          <button class="pay-btn" data-pay="Line Pay">Line Pay</button>
+          <button class="pay-btn" data-pay="全支付">全支付</button>
+          <button class="pay-btn" data-pay="街口">街口</button>
+          <button class="pay-btn" data-pay="其他">其他</button>
+        </div>
+      </div>
+
+      <button class="submit-btn" id="submitBtn" disabled>送出訂單</button>
+      <button class="clear-btn" id="clearBtn">清空訂單</button>
+    </div>
+  </aside>
+</div>
+
+<div class="mobile-bar" id="mobileBar">
+  <div class="info">
+    <span class="count" id="mbCount">尚未選購商品</span>
+    <span class="total" id="mbTotal">$0</span>
+  </div>
+  <button id="mbOpen">查看訂單</button>
+</div>
+
+<div class="scrim" id="scrim"></div>
+
+<footer class="foot">
+  StreetPOS MVP · 資料將於下一階段串接 Google Sheets（目前為前台獨立運作模式）
+</footer>
+
+<div class="toast-wrap" id="toastWrap">
+  <div class="toast" id="toast">
+    <span class="dot"></span>
+    <div class="msg">
+      <div class="t1" id="toastTitle">已完成</div>
+      <div class="t2" id="toastSub"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* =========================================================
+   商品資料（依實際商品照片與招牌價目表建立）
+   ========================================================= */
+// 價格已依攤位實際招牌（紅色價目板／電子看板）核對更新
+// 大份一律 100 元，唯獨牛奶起司醬大份為 120 元
+const PRODUCTS = [
+  { id:'salt-pepper',   name:'胡椒鹽(原味)', en:'Salt and Pepper',      price:60, priceLarge:100, diet:'全素',  color:'#2F8F4E', deep:'#1F6B38', img:'images/salt-pepper.jpg' },
+  { id:'plum',          name:'甘梅粉',       en:'Plum Powder',          price:60, priceLarge:100, diet:'全素',  color:'#9CBB78', deep:'#5F7F45', img:'images/plum.jpg' },
+  { id:'thai-veg',      name:'素食泰式酸辣醬', en:'Veggie Thai Sour Sauce', price:65, priceLarge:100, diet:'全素',  color:'#7A4B2A', deep:'#4E2F19', img:'images/thai-sour.jpg' },
+  { id:'spicy',         name:'椒麻醬',       en:'Spicy Sauce',          price:65, priceLarge:100, diet:'全素',  color:'#DD7A1E', deep:'#A85A12', img:'images/spicy.jpg' },
+  { id:'honey-mustard', name:'蜂蜜芥末醬',   en:'Honey Mustard Sauce',  price:65, priceLarge:100, diet:'蛋奶素', color:'#D9A441', deep:'#9E7422', img:'images/honey-mustard.jpg' },
+  { id:'milk-cheese',   name:'牛奶起司醬',   en:'Milk Cheese Sauce',    price:75, priceLarge:120, diet:'蛋奶素', color:'#F0C93B', deep:'#B58F17', img:'images/milk-cheese.jpg' },
+  { id:'thai',          name:'泰式酸辣醬',   en:'Thai Sour Sauce',      price:65, priceLarge:100, diet:'蛋奶素', color:'#7A4B2A', deep:'#4E2F19', img:'images/thai-sour.jpg' },
+  { id:'garlic-soy',    name:'蒜蓉醬',       en:'Garlic and Soy Sauce', price:65, priceLarge:100, diet:'蛋奶素', color:'#8B6B3D', deep:'#5A4423', img:'images/garlic-soy.jpg' },
+];
+
+const SIZES = [
+  { key:'regular', label:'原份' },
+  { key:'large',   label:'大份' },
+];
+
+const DIET_COLOR = { '全素': 'var(--teal)', '蛋奶素': 'var(--pink)' };
+
+const PAY_METHODS = ['現金','Line Pay','全支付','街口','其他'];
+
+/* =========================================================
+   狀態
+   cart 以 "productId__size" 為 key，值為數量
+   ========================================================= */
+let cart = {};
+let selectedPay = null;
+let currentFilter = 'all';
+
+function cartKey(id, size){ return `${id}__${size}`; }
+function priceFor(p, size){ return size === 'large' ? p.priceLarge : p.price; }
+
+/* =========================================================
+   DOM refs
+   ========================================================= */
+const grid = document.getElementById('grid');
+const cartArea = document.getElementById('cartArea');
+const itemCountEl = document.getElementById('itemCount');
+const subtotalEl = document.getElementById('subtotal');
+const grandTotalEl = document.getElementById('grandTotal');
+const submitBtn = document.getElementById('submitBtn');
+const clearBtn = document.getElementById('clearBtn');
+const payGrid = document.getElementById('payGrid');
+const mobileBar = document.getElementById('mobileBar');
+const mbCount = document.getElementById('mbCount');
+const mbTotal = document.getElementById('mbTotal');
+const mbOpen = document.getElementById('mbOpen');
+const cupPanel = document.getElementById('cupPanel');
+const sheetClose = document.getElementById('sheetClose');
+const scrim = document.getElementById('scrim');
+const toastWrap = document.getElementById('toastWrap');
+const toast = document.getElementById('toast');
+const toastTitle = document.getElementById('toastTitle');
+const toastSub = document.getElementById('toastSub');
+
+/* =========================================================
+   商品卡片渲染
+   ========================================================= */
+function renderGrid(){
+  grid.innerHTML = '';
+  const list = PRODUCTS.filter(p => currentFilter === 'all' || p.diet === currentFilter);
+  list.forEach(p => {
+    const qtyRegular = cart[cartKey(p.id,'regular')] || 0;
+    const qtyLarge = cart[cartKey(p.id,'large')] || 0;
+    const totalQty = qtyRegular + qtyLarge;
+
+    const card = document.createElement('div');
+    card.className = 'card' + (totalQty > 0 ? ' active-item' : '');
+    card.style.setProperty('--flavor', p.color);
+    card.style.setProperty('--flavor-deep', p.deep);
+
+    const sizeRows = SIZES.map(s => {
+      const qty = s.key === 'large' ? qtyLarge : qtyRegular;
+      const price = priceFor(p, s.key);
+      return `
+        <div class="size-row ${s.key}">
+          <span class="size-tag">${s.label}</span>
+          <span class="price">$${price}</span>
+          <div class="stepper">
+            <button type="button" aria-label="減少 ${p.name} ${s.label}" data-act="dec" data-id="${p.id}" data-size="${s.key}">−</button>
+            <span class="n">${qty}</span>
+            <button type="button" aria-label="增加 ${p.name} ${s.label}" data-act="inc" data-id="${p.id}" data-size="${s.key}">＋</button>
+          </div>
+        </div>
+      `;
+    }).join('');
+
+    card.innerHTML = `
+      <div class="photo-wrap">
+        <img src="${p.img}" alt="${p.name}" loading="lazy">
+        <div class="badge-row">
+          <span class="diet-badge" style="--diet-color:${DIET_COLOR[p.diet]}">${p.diet}</span>
+          <span class="qty-badge">${totalQty}</span>
+        </div>
+      </div>
+      <div class="info">
+        <div class="flavor-name">${p.name}<span class="en">${p.en}</span></div>
+        <div class="sizes">${sizeRows}</div>
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+
+grid.addEventListener('click', (e) => {
+  const btn = e.target.closest('button[data-act]');
+  if (!btn) return;
+  const id = btn.dataset.id;
+  const size = btn.dataset.size;
+  const key = cartKey(id, size);
+  const current = cart[key] || 0;
+  if (btn.dataset.act === 'inc'){
+    cart[key] = current + 1;
+  } else if (btn.dataset.act === 'dec'){
+    if (current <= 1){ delete cart[key]; } else { cart[key] = current - 1; }
+  }
+  renderAll();
+});
+
+/* =========================================================
+   分類篩選
+   ========================================================= */
+document.querySelectorAll('.chip').forEach(chip => {
+  chip.addEventListener('click', () => {
+    document.querySelectorAll('.chip').forEach(c => { c.classList.remove('active'); c.setAttribute('aria-selected','false'); });
+    chip.classList.add('active');
+    chip.setAttribute('aria-selected','true');
+    currentFilter = chip.dataset.filter;
+    renderGrid();
+  });
+});
+
+/* =========================================================
+   訂單區渲染
+   ========================================================= */
+function renderCart(){
+  const keys = Object.keys(cart);
+  if (keys.length === 0){
+    cartArea.innerHTML = `<div class="cart-empty">尚未選購商品<br>點選左側商品即可加入訂單</div>`;
+    itemCountEl.textContent = '0 項';
+  } else {
+    let rows = '';
+    let totalQty = 0;
+    keys.forEach(key => {
+      const [id, size] = key.split('__');
+      const p = PRODUCTS.find(x => x.id === id);
+      const sizeLabel = SIZES.find(s => s.key === size).label;
+      const qty = cart[key];
+      const unitPrice = priceFor(p, size);
+      totalQty += qty;
+      const sub = unitPrice * qty;
+      rows += `
+        <div class="cart-row">
+          <span class="swatch" style="background:${p.color}"></span>
+          <div>
+            <div class="name">${p.name}<span style="color:var(--ink-soft); font-weight:500;">（${sizeLabel}）</span></div>
+            <div class="sub">$${unitPrice} × ${qty}</div>
+          </div>
+          <div class="amt">$${sub}</div>
+        </div>
+      `;
+    });
+    cartArea.innerHTML = `<div class="cart-list">${rows}</div>`;
+    itemCountEl.textContent = `${totalQty} 項`;
+  }
+
+  const total = keys.reduce((sum, key) => {
+    const [id, size] = key.split('__');
+    const p = PRODUCTS.find(x => x.id === id);
+    return sum + priceFor(p, size) * cart[key];
+  }, 0);
+  subtotalEl.textContent = `$${total}`;
+  grandTotalEl.textContent = `$${total}`;
+
+  const totalQty = keys.reduce((s, key) => s + cart[key], 0);
+  mbCount.textContent = totalQty > 0 ? `${totalQty} 項商品` : '尚未選購商品';
+  mbTotal.textContent = `$${total}`;
+
+  updateSubmitState();
+}
+
+function updateSubmitState(){
+  const hasItems = Object.keys(cart).length > 0;
+  submitBtn.disabled = !(hasItems && selectedPay);
+}
+
+/* =========================================================
+   付款方式
+   ========================================================= */
+payGrid.addEventListener('click', (e) => {
+  const btn = e.target.closest('.pay-btn');
+  if (!btn) return;
+  selectedPay = btn.dataset.pay;
+  document.querySelectorAll('.pay-btn').forEach(b => b.classList.toggle('selected', b === btn));
+  updateSubmitState();
+});
+
+/* =========================================================
+   清空訂單
+   ========================================================= */
+clearBtn.addEventListener('click', () => {
+  cart = {};
+  selectedPay = null;
+  document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+  renderAll();
+});
+
+/* =========================================================
+   送出訂單
+   訂單編號規則：ORD-YYYYMMDD-HHMMSS-XXX（隨機三碼）
+   TODO（下一階段）：將 sendOrderToServer() 內容改為呼叫
+   Google Apps Script Web App 的 doPost，寫入 Google Sheets「Orders」工作表。
+   目前為第一版（僅前台），先以本機模擬送出結果。
+   ========================================================= */
+function makeOrderId(){
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  const datePart = `${now.getFullYear()}${pad(now.getMonth()+1)}${pad(now.getDate())}`;
+  const timePart = `${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+  const rand = Math.floor(Math.random()*900+100);
+  return `ORD-${datePart}-${timePart}-${rand}`;
+}
+
+function buildOrderPayload(orderId){
+  const now = new Date();
+  const items = Object.keys(cart).map(key => {
+    const [id, size] = key.split('__');
+    const p = PRODUCTS.find(x => x.id === id);
+    const sizeLabel = SIZES.find(s => s.key === size).label;
+    const unitPrice = priceFor(p, size);
+    const qty = cart[key];
+    return {
+      name: p.name,
+      size: sizeLabel,
+      qty,
+      unitPrice,
+      subtotal: unitPrice * qty
+    };
+  });
+  const total = items.reduce((s,i) => s + i.subtotal, 0);
+  return {
+    orderId,
+    date: now.toISOString().slice(0,10),
+    time: now.toTimeString().slice(0,8),
+    items,
+    total,
+    paymentMethod: selectedPay
+  };
+}
+
+// 之後接上 Google Apps Script 時，把下面內容換成 fetch(GAS_URL, {method:'POST', body: JSON.stringify(payload)})
+function sendOrderToServer(payload){
+  return new Promise((resolve) => {
+    console.log('[StreetPOS] 訂單資料（尚未串接 Google Sheets）', payload);
+    setTimeout(() => resolve({ ok: true }), 300);
+  });
+}
+
+submitBtn.addEventListener('click', async () => {
+  if (submitBtn.disabled) return;
+  const hasItems = Object.keys(cart).length > 0;
+  if (!hasItems || !selectedPay) return; // 送出前必須有商品且選擇付款方式
+
+  const orderId = makeOrderId();
+  const payload = buildOrderPayload(orderId);
+
+  submitBtn.disabled = true;
+  submitBtn.textContent = '送出中…';
+
+  try{
+    const res = await sendOrderToServer(payload);
+    if (res.ok){
+      showToast(false, '訂單已送出', `${orderId} · 總金額 $${payload.total}`);
+      cart = {};
+      selectedPay = null;
+      document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
+      renderAll();
+      closeSheet();
+    } else {
+      throw new Error('failed');
+    }
+  } catch(err){
+    // 失敗時保留訂單內容並提示重新送出
+    showToast(true, '送出失敗，請重新送出', '訂單內容已保留，未清空');
+  } finally {
+    submitBtn.textContent = '送出訂單';
+    updateSubmitState();
+  }
+});
+
+/* =========================================================
+   Toast
+   ========================================================= */
+let toastTimer = null;
+function showToast(isError, title, sub){
+  toast.classList.toggle('error', isError);
+  toastTitle.textContent = title;
+  toastSub.textContent = sub || '';
+  toastWrap.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => toastWrap.classList.remove('show'), 3200);
+}
+
+/* =========================================================
+   行動裝置：訂單面板開關
+   ========================================================= */
+function openSheet(){
+  cupPanel.classList.add('open');
+  scrim.classList.add('show');
+}
+function closeSheet(){
+  cupPanel.classList.remove('open');
+  scrim.classList.remove('show');
+}
+mbOpen.addEventListener('click', openSheet);
+sheetClose.addEventListener('click', closeSheet);
+scrim.addEventListener('click', closeSheet);
+
+/* =========================================================
+   時鐘
+   ========================================================= */
+function tickClock(){
+  const now = new Date();
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('clock').textContent =
+    `${now.getFullYear()}/${pad(now.getMonth()+1)}/${pad(now.getDate())}  ${pad(now.getHours())}:${pad(now.getMinutes())}:${pad(now.getSeconds())}`;
+}
+tickClock();
+setInterval(tickClock, 1000);
+
+/* =========================================================
+   初始化
+   ========================================================= */
+function renderAll(){
+  renderGrid();
+  renderCart();
+}
+renderAll();
+</script>
+</body>
+</html>
