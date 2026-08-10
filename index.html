@@ -1,3 +1,5 @@
+
+Index · HTML
 <!DOCTYPE html>
 <html lang="zh-Hant">
 <head>
@@ -13,7 +15,7 @@
     --cream-deep:#EBDFC0;
     --ink:#3A2A18;
     --ink-soft:#6B5744;
-
+ 
     /* sampled from the actual A43 signboard photo */
     --maroon:#8A2E0E;
     --maroon-deep:#4A1508;
@@ -25,11 +27,11 @@
     --teal:#14A69C;
     --pink:#D81B7A;
     --orange-stamp:#E07B29;
-
+ 
     --paper:#FFFDF8;
     --line:#E4D6B8;
     --good:#2F8F4E;
-
+ 
     --c-garlic:#8B6B3D;
     --c-spicy:#DD7A1E;
     --c-cheese:#F0C93B;
@@ -37,12 +39,12 @@
     --c-salt:#2F8F4E;
     --c-thai:#7A4B2A;
     --c-honey:#D9A441;
-
+ 
     --font-display:'Baloo 2', 'Noto Sans TC', sans-serif;
     --font-body:'Noto Sans TC', sans-serif;
     --font-mono:'JetBrains Mono', monospace;
   }
-
+ 
   *{box-sizing:border-box;}
   html,body{margin:0;padding:0;}
   body{
@@ -55,9 +57,9 @@
     min-height:100vh;
     padding-bottom:96px;
   }
-
+ 
   a{color:inherit;}
-
+ 
   /* ---------- Header (mirrors the real A43 signboard) ---------- */
   header.top{
     position:sticky; top:0; z-index:40;
@@ -93,7 +95,7 @@
   .brand .tagline{font-size:11px; opacity:.85; font-weight:500; letter-spacing:.3px;}
   .brand .tagline .en{font-family:var(--font-mono); opacity:.8;}
   .clock{font-family:var(--font-mono); font-size:12px; opacity:.85; text-align:right; line-height:1.5; color:#FFE9C2;}
-
+ 
   /* ---------- Layout ---------- */
   .layout{
     max-width:1180px; margin:0 auto; padding:18px 16px 0;
@@ -102,7 +104,7 @@
   @media (min-width:960px){
     .layout{grid-template-columns:1fr 340px; align-items:start;}
   }
-
+ 
   /* ---------- Filter chips ---------- */
   .filters{display:flex; gap:8px; overflow-x:auto; padding-bottom:4px; margin-bottom:14px;}
   .filters::-webkit-scrollbar{display:none;}
@@ -116,7 +118,7 @@
   .chip.active{
     background:var(--maroon); border-color:var(--maroon); color:var(--gold);
   }
-
+ 
   /* ---------- Product grid ---------- */
   .grid{
     display:grid; grid-template-columns:repeat(2, 1fr); gap:12px;
@@ -124,7 +126,7 @@
   @media (min-width:600px){ .grid{grid-template-columns:repeat(3, 1fr);} }
   @media (min-width:960px){ .grid{grid-template-columns:repeat(2, 1fr);} }
   @media (min-width:1180px){ .grid{grid-template-columns:repeat(3, 1fr);} }
-
+ 
   .card{
     position:relative;
     background:var(--paper);
@@ -136,7 +138,7 @@
   }
   .card.active-item{border-color:var(--flavor); box-shadow:0 6px 0 0 var(--flavor);}
   .card:active{transform:translateY(1px);}
-
+ 
   .card .badge-row{
     position:absolute; top:8px; left:8px; right:8px; z-index:2;
     display:flex; justify-content:space-between; align-items:flex-start;
@@ -154,7 +156,7 @@
     opacity:0; transform:scale(.6); transition:all .15s ease;
   }
   .card.active-item .qty-badge{opacity:1; transform:scale(1);}
-
+ 
   .card .photo-wrap{
     aspect-ratio:1/0.95; background:var(--flavor);
     display:flex; align-items:center; justify-content:center;
@@ -168,7 +170,7 @@
     content:""; position:absolute; inset:0;
     background:linear-gradient(180deg, transparent 55%, rgba(0,0,0,0.28) 100%);
   }
-
+ 
   .card .info{padding:10px 12px 12px; display:flex; flex-direction:column; gap:7px; flex:1;}
   .card .flavor-name{
     font-family:var(--font-display); font-weight:700; font-size:15px; line-height:1.25;
@@ -189,7 +191,7 @@
     display:inline-block; flex:1 1 auto; text-align:center;
   }
   .size-row.large .price{background:var(--maroon); box-shadow:0 2px 0 var(--maroon-deep);}
-
+ 
   .stepper{display:flex; align-items:center; gap:0; border:1.5px solid var(--line); border-radius:9px; overflow:hidden; flex:0 0 auto;}
   .stepper button{
     width:24px; height:24px; border:none; background:var(--cream-deep); color:var(--ink);
@@ -199,7 +201,7 @@
   .stepper .n{
     width:22px; text-align:center; font-family:var(--font-mono); font-weight:700; font-size:12px;
   }
-
+ 
   /* ---------- Cart / cup panel ---------- */
   .cup-panel{
     background:var(--paper);
@@ -226,7 +228,7 @@
   .cup-band .cup-band-inner .count{background:rgba(245,183,46,0.2); color:#FFF3E0;}
   .cup-band h2{margin:0; font-family:var(--font-display); font-weight:700; font-size:15px;}
   .cup-band .count{font-family:var(--font-mono); font-size:12px; background:rgba(255,255,255,0.2); padding:2px 8px; border-radius:999px;}
-
+ 
   .cart-body{padding:14px 16px 16px; display:flex; flex-direction:column; gap:10px;}
   .cart-empty{
     text-align:center; color:var(--ink-soft); font-size:13px; padding:22px 8px;
@@ -242,7 +244,7 @@
   .cart-row .name{font-size:12.5px; font-weight:600; line-height:1.35;}
   .cart-row .sub{font-family:var(--font-mono); font-size:11px; color:var(--ink-soft); margin-top:1px;}
   .cart-row .amt{font-family:var(--font-mono); font-weight:700; font-size:13px; text-align:right; white-space:nowrap;}
-
+ 
   .totals{border-top:1.5px solid var(--line); padding-top:10px; display:flex; flex-direction:column; gap:4px;}
   .totals .line{display:flex; justify-content:space-between; font-size:12.5px; color:var(--ink-soft);}
   .totals .grand{display:flex; justify-content:space-between; align-items:baseline; margin-top:4px;}
@@ -252,7 +254,7 @@
     background:var(--cup-red); padding:3px 12px; border-radius:10px 4px 10px 4px;
     box-shadow:0 2px 0 var(--cup-red-deep); transform:rotate(-1.5deg); display:inline-block;
   }
-
+ 
   .pay-section{display:flex; flex-direction:column; gap:8px;}
   .pay-label{font-size:12px; font-weight:700; color:var(--ink-soft); letter-spacing:.5px;}
   .pay-grid{display:grid; grid-template-columns:repeat(3, 1fr); gap:7px;}
@@ -263,7 +265,7 @@
     transition:all .12s ease;
   }
   .pay-btn.selected{background:var(--ink); border-color:var(--ink); color:#FFF7EC;}
-
+ 
   .submit-btn{
     margin-top:4px; width:100%; padding:14px; border:none; border-radius:14px;
     font-family:var(--font-display); font-weight:700; font-size:16px; letter-spacing:.5px;
@@ -279,7 +281,7 @@
     background:none; border:none; font-size:11.5px; color:var(--ink-soft);
     text-decoration:underline; cursor:pointer; align-self:center; padding:2px;
   }
-
+ 
   /* ---------- Mobile bottom bar ---------- */
   .mobile-bar{
     display:none;
@@ -318,12 +320,16 @@
     display:none; position:fixed; inset:0; background:rgba(58,42,24,0.35); z-index:55;
   }
   .scrim.show{display:block;}
-
+ 
   footer.foot{
     max-width:1180px; margin:26px auto 0; padding:0 16px; text-align:center;
     color:var(--ink-soft); font-size:11.5px; line-height:1.8;
   }
-
+ 
+  .footer-credit{
+    display:block; margin-top:4px; font-size:10.5px; opacity:.75;
+  }
+ 
   /* ---------- Toast ---------- */
   .toast-wrap{position:fixed; top:14px; left:50%; transform:translateX(-50%) translateY(-140%);
     z-index:100; transition:transform .3s ease; width:min(92vw, 380px);}
@@ -334,22 +340,22 @@
     display:flex; gap:10px; align-items:flex-start;
     border:1px solid var(--gold-deep);
   }
-
+ 
   .toast .dot{width:10px; height:10px; border-radius:50%; background:var(--good); margin-top:4px; flex:0 0 auto;}
   .toast.error .dot{background:var(--cup-red);}
   .toast .msg .t1{font-family:var(--font-display); font-weight:700; font-size:14px; color:var(--gold);}
   .toast .msg .t2{font-family:var(--font-mono); font-size:11.5px; opacity:.8; margin-top:2px;}
-
+ 
   .visually-hidden{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0);}
   :focus-visible{outline:3px solid var(--cup-red); outline-offset:2px;}
-
+ 
   @media (prefers-reduced-motion: reduce){
     *{transition:none !important; animation:none !important;}
   }
 </style>
 </head>
 <body>
-
+ 
 <header class="top">
   <div class="top-row">
     <div class="brand">
@@ -365,7 +371,7 @@
     <div class="clock" id="clock">--:--:--</div>
   </div>
 </header>
-
+ 
 <div class="layout">
   <main>
     <div class="filters" role="tablist" aria-label="商品分類">
@@ -375,7 +381,7 @@
     </div>
     <div class="grid" id="grid"></div>
   </main>
-
+ 
   <aside id="cupPanel" class="cup-panel" aria-label="目前訂單">
     <button class="sheet-close" id="sheetClose" aria-label="關閉訂單">✕</button>
     <div class="cup-band">
@@ -386,7 +392,7 @@
     </div>
     <div class="cart-body">
       <div id="cartArea"></div>
-
+ 
       <div class="totals">
         <div class="line"><span>商品小計</span><span id="subtotal" class="amt-mono">$0</span></div>
         <div class="grand">
@@ -394,7 +400,7 @@
           <span class="value" id="grandTotal">$0</span>
         </div>
       </div>
-
+ 
       <div class="pay-section">
         <span class="pay-label">付款方式</span>
         <div class="pay-grid" id="payGrid">
@@ -405,13 +411,13 @@
           <button class="pay-btn" data-pay="其他">其他</button>
         </div>
       </div>
-
+ 
       <button class="submit-btn" id="submitBtn" disabled>送出訂單</button>
       <button class="clear-btn" id="clearBtn">清空訂單</button>
     </div>
   </aside>
 </div>
-
+ 
 <div class="mobile-bar" id="mobileBar">
   <div class="info">
     <span class="count" id="mbCount">尚未選購商品</span>
@@ -419,13 +425,14 @@
   </div>
   <button id="mbOpen">查看訂單</button>
 </div>
-
+ 
 <div class="scrim" id="scrim"></div>
-
+ 
 <footer class="foot">
-  StreetPOS MVP · 已串接 Google Sheets（尚未設定 GAS_URL 時自動切換為本機模擬模式）
+  彩虹臭薯條 A43 · StreetPOS 點餐系統
+  <span class="footer-credit">AW 開發設計</span>
 </footer>
-
+ 
 <div class="toast-wrap" id="toastWrap">
   <div class="toast" id="toast">
     <span class="dot"></span>
@@ -435,7 +442,7 @@
     </div>
   </div>
 </div>
-
+ 
 <script>
 /* =========================================================
    商品資料（依實際商品照片與招牌價目表建立）
@@ -452,16 +459,16 @@ const PRODUCTS = [
   { id:'thai',          name:'泰式酸辣醬',   en:'Thai Sour Sauce',      price:70, priceLarge:100, diet:'蛋奶素', color:'#7A4B2A', deep:'#4E2F19', img:'images/thai-sour.webp' },
   { id:'garlic-soy',    name:'蒜蓉醬',       en:'Garlic and Soy Sauce', price:70, priceLarge:100, diet:'蛋奶素', color:'#8B6B3D', deep:'#5A4423', img:'images/garlic-soy.webp' },
 ];
-
+ 
 const SIZES = [
   { key:'regular', label:'原份' },
   { key:'large',   label:'大份' },
 ];
-
+ 
 const DIET_COLOR = { '全素': 'var(--teal)', '蛋奶素': 'var(--pink)' };
-
+ 
 const PAY_METHODS = ['現金','Line Pay','全支付','街口','其他'];
-
+ 
 /* =========================================================
    狀態
    cart 以 "productId__size" 為 key，值為數量
@@ -469,10 +476,10 @@ const PAY_METHODS = ['現金','Line Pay','全支付','街口','其他'];
 let cart = {};
 let selectedPay = null;
 let currentFilter = 'all';
-
+ 
 function cartKey(id, size){ return `${id}__${size}`; }
 function priceFor(p, size){ return size === 'large' ? p.priceLarge : p.price; }
-
+ 
 /* =========================================================
    DOM refs
    ========================================================= */
@@ -495,7 +502,7 @@ const toastWrap = document.getElementById('toastWrap');
 const toast = document.getElementById('toast');
 const toastTitle = document.getElementById('toastTitle');
 const toastSub = document.getElementById('toastSub');
-
+ 
 /* =========================================================
    商品卡片渲染
    ========================================================= */
@@ -506,12 +513,12 @@ function renderGrid(){
     const qtyRegular = cart[cartKey(p.id,'regular')] || 0;
     const qtyLarge = cart[cartKey(p.id,'large')] || 0;
     const totalQty = qtyRegular + qtyLarge;
-
+ 
     const card = document.createElement('div');
     card.className = 'card' + (totalQty > 0 ? ' active-item' : '');
     card.style.setProperty('--flavor', p.color);
     card.style.setProperty('--flavor-deep', p.deep);
-
+ 
     const sizeRows = SIZES.map(s => {
       const qty = s.key === 'large' ? qtyLarge : qtyRegular;
       const price = priceFor(p, s.key);
@@ -527,7 +534,7 @@ function renderGrid(){
         </div>
       `;
     }).join('');
-
+ 
     card.innerHTML = `
       <div class="photo-wrap">
         <img src="${p.img}" alt="${p.name}" loading="lazy">
@@ -544,7 +551,7 @@ function renderGrid(){
     grid.appendChild(card);
   });
 }
-
+ 
 grid.addEventListener('click', (e) => {
   const btn = e.target.closest('button[data-act]');
   if (!btn) return;
@@ -559,7 +566,7 @@ grid.addEventListener('click', (e) => {
   }
   renderAll();
 });
-
+ 
 /* =========================================================
    分類篩選
    ========================================================= */
@@ -572,7 +579,7 @@ document.querySelectorAll('.chip').forEach(chip => {
     renderGrid();
   });
 });
-
+ 
 /* =========================================================
    訂單區渲染
    ========================================================= */
@@ -606,7 +613,7 @@ function renderCart(){
     cartArea.innerHTML = `<div class="cart-list">${rows}</div>`;
     itemCountEl.textContent = `${totalQty} 項`;
   }
-
+ 
   const total = keys.reduce((sum, key) => {
     const [id, size] = key.split('__');
     const p = PRODUCTS.find(x => x.id === id);
@@ -614,19 +621,19 @@ function renderCart(){
   }, 0);
   subtotalEl.textContent = `$${total}`;
   grandTotalEl.textContent = `$${total}`;
-
+ 
   const totalQty = keys.reduce((s, key) => s + cart[key], 0);
   mbCount.textContent = totalQty > 0 ? `${totalQty} 項商品` : '尚未選購商品';
   mbTotal.textContent = `$${total}`;
-
+ 
   updateSubmitState();
 }
-
+ 
 function updateSubmitState(){
   const hasItems = Object.keys(cart).length > 0;
   submitBtn.disabled = !(hasItems && selectedPay);
 }
-
+ 
 /* =========================================================
    付款方式
    ========================================================= */
@@ -637,7 +644,7 @@ payGrid.addEventListener('click', (e) => {
   document.querySelectorAll('.pay-btn').forEach(b => b.classList.toggle('selected', b === btn));
   updateSubmitState();
 });
-
+ 
 /* =========================================================
    清空訂單
    ========================================================= */
@@ -647,14 +654,14 @@ clearBtn.addEventListener('click', () => {
   document.querySelectorAll('.pay-btn').forEach(b => b.classList.remove('selected'));
   renderAll();
 });
-
+ 
 /* =========================================================
    後端連線設定
    部署好 Google Apps Script 網頁應用程式後，把網址貼在這裡。
    部署步驟見「後台建置」說明文件。
    ========================================================= */
-const GAS_URL = 'https://script.google.com/macros/s/AKfycbx7xxIIDxmkO20AJYhI1b5qbCtzmae3_Di-M0jQ0FCa_NV3HUFVEgaBB7Pg3z6TYV1nwg/exec';
-
+const GAS_URL = 'PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE';
+ 
 /* =========================================================
    送出訂單
    訂單編號規則：ORD-YYYYMMDD-HHMMSS-XXX（隨機三碼）
@@ -667,7 +674,16 @@ function makeOrderId(){
   const rand = Math.floor(Math.random()*900+100);
   return `ORD-${datePart}-${timePart}-${rand}`;
 }
-
+ 
+function localDateStr(d){
+  const pad = n => String(n).padStart(2,'0');
+  return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+}
+function localTimeStr(d){
+  const pad = n => String(n).padStart(2,'0');
+  return `${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
+}
+ 
 function buildOrderPayload(orderId){
   const now = new Date();
   const items = Object.keys(cart).map(key => {
@@ -687,26 +703,28 @@ function buildOrderPayload(orderId){
   const total = items.reduce((s,i) => s + i.subtotal, 0);
   return {
     orderId,
-    date: now.toISOString().slice(0,10),
-    time: now.toTimeString().slice(0,8),
+    // 用本地時間（非 UTC），避免半夜訂單被 toISOString() 的 UTC 換算誤判成前一天，
+    // 影響 Google Sheets 那邊按日期分組的每日營運分析。
+    date: localDateStr(now),
+    time: localTimeStr(now),
     items,
     total,
     paymentMethod: selectedPay
   };
 }
-
+ 
 // 已串接 Google Apps Script：若尚未設定 GAS_URL，則自動退回本機模擬模式，
 // 方便在還沒部署後端之前，前台也能單獨測試。
 function sendOrderToServer(payload){
   const notConfigured = !GAS_URL || GAS_URL.indexOf('PASTE_YOUR') === 0;
-
+ 
   if (notConfigured){
     return new Promise((resolve) => {
       console.warn('[StreetPOS] 尚未設定 GAS_URL，訂單僅本機模擬，未寫入 Google Sheets', payload);
       setTimeout(() => resolve({ ok: true, orderId: payload.orderId }), 300);
     });
   }
-
+ 
   // 用 text/plain 避免瀏覽器送出 CORS 預檢請求（Apps Script 不處理 OPTIONS）
   return fetch(GAS_URL, {
     method: 'POST',
@@ -716,18 +734,18 @@ function sendOrderToServer(payload){
     .then(res => res.json())
     .catch(err => ({ ok: false, error: String(err) }));
 }
-
+ 
 submitBtn.addEventListener('click', async () => {
   if (submitBtn.disabled) return;
   const hasItems = Object.keys(cart).length > 0;
   if (!hasItems || !selectedPay) return; // 送出前必須有商品且選擇付款方式
-
+ 
   const orderId = makeOrderId();
   const payload = buildOrderPayload(orderId);
-
+ 
   submitBtn.disabled = true;
   submitBtn.textContent = '送出中…';
-
+ 
   try{
     const res = await sendOrderToServer(payload);
     if (res.ok){
@@ -748,7 +766,7 @@ submitBtn.addEventListener('click', async () => {
     updateSubmitState();
   }
 });
-
+ 
 /* =========================================================
    Toast
    ========================================================= */
@@ -761,7 +779,7 @@ function showToast(isError, title, sub){
   clearTimeout(toastTimer);
   toastTimer = setTimeout(() => toastWrap.classList.remove('show'), 3200);
 }
-
+ 
 /* =========================================================
    行動裝置：訂單面板開關
    ========================================================= */
@@ -776,7 +794,7 @@ function closeSheet(){
 mbOpen.addEventListener('click', openSheet);
 sheetClose.addEventListener('click', closeSheet);
 scrim.addEventListener('click', closeSheet);
-
+ 
 /* =========================================================
    時鐘
    ========================================================= */
@@ -788,7 +806,7 @@ function tickClock(){
 }
 tickClock();
 setInterval(tickClock, 1000);
-
+ 
 /* =========================================================
    初始化
    ========================================================= */
@@ -800,3 +818,4 @@ renderAll();
 </script>
 </body>
 </html>
+ 
