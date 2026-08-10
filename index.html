@@ -423,7 +423,7 @@
 <div class="scrim" id="scrim"></div>
 
 <footer class="foot">
-  StreetPOS MVP · 資料將於下一階段串接 Google Sheets（目前為前台獨立運作模式）
+  StreetPOS MVP · 已串接 Google Sheets（尚未設定 GAS_URL 時自動切換為本機模擬模式）
 </footer>
 
 <div class="toast-wrap" id="toastWrap">
@@ -649,11 +649,15 @@ clearBtn.addEventListener('click', () => {
 });
 
 /* =========================================================
+   後端連線設定
+   部署好 Google Apps Script 網頁應用程式後，把網址貼在這裡。
+   部署步驟見「後台建置」說明文件。
+   ========================================================= */
+const GAS_URL = 'https://script.google.com/macros/s/AKfycbx7xxIIDxmkO20AJYhI1b5qbCtzmae3_Di-M0jQ0FCa_NV3HUFVEgaBB7Pg3z6TYV1nwg/exec';
+
+/* =========================================================
    送出訂單
    訂單編號規則：ORD-YYYYMMDD-HHMMSS-XXX（隨機三碼）
-   TODO（下一階段）：將 sendOrderToServer() 內容改為呼叫
-   Google Apps Script Web App 的 doPost，寫入 Google Sheets「Orders」工作表。
-   目前為第一版（僅前台），先以本機模擬送出結果。
    ========================================================= */
 function makeOrderId(){
   const now = new Date();
@@ -691,12 +695,26 @@ function buildOrderPayload(orderId){
   };
 }
 
-// 之後接上 Google Apps Script 時，把下面內容換成 fetch(GAS_URL, {method:'POST', body: JSON.stringify(payload)})
+// 已串接 Google Apps Script：若尚未設定 GAS_URL，則自動退回本機模擬模式，
+// 方便在還沒部署後端之前，前台也能單獨測試。
 function sendOrderToServer(payload){
-  return new Promise((resolve) => {
-    console.log('[StreetPOS] 訂單資料（尚未串接 Google Sheets）', payload);
-    setTimeout(() => resolve({ ok: true }), 300);
-  });
+  const notConfigured = !GAS_URL || GAS_URL.indexOf('PASTE_YOUR') === 0;
+
+  if (notConfigured){
+    return new Promise((resolve) => {
+      console.warn('[StreetPOS] 尚未設定 GAS_URL，訂單僅本機模擬，未寫入 Google Sheets', payload);
+      setTimeout(() => resolve({ ok: true, orderId: payload.orderId }), 300);
+    });
+  }
+
+  // 用 text/plain 避免瀏覽器送出 CORS 預檢請求（Apps Script 不處理 OPTIONS）
+  return fetch(GAS_URL, {
+    method: 'POST',
+    headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+    body: JSON.stringify(payload)
+  })
+    .then(res => res.json())
+    .catch(err => ({ ok: false, error: String(err) }));
 }
 
 submitBtn.addEventListener('click', async () => {
